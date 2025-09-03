@@ -9,17 +9,17 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 export default function BravePink() {
   // Brand colors
-  const PINK_DEFAULT = "#ff3ea5";
-  const GREEN_DEFAULT = "#32ff84";
+  const PINK_DEFAULT = "#f784c5";
+  const GREEN_DEFAULT = "#273A2A";
 
   const [fileName, setFileName] = useState<string | null>(null);
   const [imgEl, setImgEl] = useState<HTMLImageElement | null>(null);
-  const [shadowHex, setShadowHex] = useState(PINK_DEFAULT);
-  const [highlightHex, setHighlightHex] = useState(GREEN_DEFAULT);
-  const [strength, setStrength] = useState(90); // 0..100
-  const [gamma, setGamma] = useState(1.0);      // 0.2..3
-  const [contrast, setContrast] = useState(10); // -100..100
-  const [brightness, setBrightness] = useState(0); // -100..100
+  const [shadowHex, setShadowHex] = useState(GREEN_DEFAULT);
+  const [highlightHex, setHighlightHex] = useState(PINK_DEFAULT);
+  const [strength, setStrength] = useState(90);   // sedikit lebih rendah biar ga full mapping
+  const [gamma, setGamma] = useState(3.00);       // bikin midtone agak rata
+  const [contrast, setContrast] = useState(28);    // sedikit pop
+  const [brightness, setBrightness] = useState(2); // tambahin dikit biar ga kusam
   const [isDragging, setIsDragging] = useState(false);
   const [busy, setBusy] = useState(false);
   const [showDemands, setShowDemands] = useState(false);
@@ -166,11 +166,37 @@ export default function BravePink() {
     const f = e.target.files?.[0]; if (f) handleFile(f);
   }
   function swapColors() {
-    setShadowHex((prev) => { const tmp = highlightHex; setHighlightHex(prev); return tmp; });
+    if (shadowHex === GREEN_DEFAULT && highlightHex === PINK_DEFAULT) {
+      // sekarang hijau→pink, ganti ke preset pink→hijau
+      setPresetPinkKeHijau();
+    } else {
+      // sebaliknya
+      setPresetHijauKePink();
+    }
   }
+  function setPresetHijauKePink() {
+  setShadowHex(GREEN_DEFAULT);
+  setHighlightHex(PINK_DEFAULT);
+  setGamma(3.00);
+  setContrast(28);
+  setBrightness(2);
+  setStrength(90);
+}
+function setPresetPinkKeHijau() {
+  setShadowHex(PINK_DEFAULT);
+  setHighlightHex(GREEN_DEFAULT);
+  setGamma(0.75);
+  setContrast(30);
+  setBrightness(3);
+  setStrength(93);
+}
   function setPresetBravePink() {
-    setShadowHex(PINK_DEFAULT); setHighlightHex(GREEN_DEFAULT);
-    setGamma(1.0); setContrast(10); setBrightness(0); setStrength(90);
+  setShadowHex(GREEN_DEFAULT);
+  setHighlightHex(PINK_DEFAULT);
+  setGamma(3.00);
+  setContrast(28);
+  setBrightness(2);
+  setStrength(90);
   }
   function resetAll() {
     if (!imgEl || !bufferRef.current) return;
@@ -247,7 +273,7 @@ export default function BravePink() {
               className="px-3 py-1.5 rounded-xl bg-pink-600/20 hover:bg-pink-600/30 border border-pink-500/40 transition text-sm"
               title="Lihat 17+8 Tuntutan Rakyat"
             >
-              17+8 Tuntutan Rakyat
+              Kawal 17+8
             </button>
             <button
               onClick={setPresetBravePink}
